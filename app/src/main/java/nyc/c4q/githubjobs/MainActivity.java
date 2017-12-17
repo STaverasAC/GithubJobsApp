@@ -33,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
     final static String SHARED_PREF_KEY ="SharedPreferences";
     SharedPreferences storedTypeAndLocation;
     EditText typeInput;
+    String type;
+    String location;
+
     EditText locationInput;
     CheckBox checkBox;
     Button getFeed;
@@ -44,13 +47,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         storedTypeAndLocation = getSharedPreferences(SHARED_PREF_KEY,0);
         setViewReferences();
-        getJobsListFromAPI();
+
 
         //TODO set up recycler view using jobsList;
 
         getFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                type = typeInput.getText().toString();
+                location = locationInput.getText().toString();
+                getJobsListFromAPI();
                 storePreferences();
 
             }
@@ -85,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getJobsListFromAPI(){
-        Map<String,String> map = fetchJobsByTypeAndLocation("android","ny");
+
+        Map<String,String> map = fetchJobsByTypeAndLocation(type,location);
         githubJobApiClient = new GithubJobApiClient();
         githubJobApiClient.start(map);
         new Timer().schedule(
