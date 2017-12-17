@@ -1,6 +1,8 @@
 package nyc.c4q.githubjobs;
 
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import nyc.c4q.githubjobs.controller.JobAdapter;
 import nyc.c4q.githubjobs.model.Job;
@@ -23,7 +27,8 @@ import nyc.c4q.githubjobs.network.GithubJobApi;
 import nyc.c4q.githubjobs.network.GithubJobApiClient;
 
 public class MainActivity extends AppCompatActivity {
-    private String TAG =MainActivity.class.getSimpleName();
+    final static String TAG ="DATA CHECKS: ";
+    GithubJobApiClient githubJobApiClient;
     List<Job> jobsList;
     final static String SHARED_PREF_KEY ="SharedPreferences";
     SharedPreferences storedTypeAndLocation;
@@ -47,10 +52,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 storePreferences();
-                JobAdapter jobAdapter = new JobAdapter(jobsList);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
-                jobsRecyclerView.setAdapter(jobAdapter);
-                jobsRecyclerView.setLayoutManager(linearLayoutManager);
 
             }
         });
@@ -84,10 +85,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getJobsListFromAPI(){
-        Map<String,String> map = fetchJobsByTypeAndLocation("python","NewYork");
-        GithubJobApiClient githubJobApiClient = new GithubJobApiClient();
+        Map<String,String> map = fetchJobsByTypeAndLocation("android","ny");
+        githubJobApiClient = new GithubJobApiClient();
         githubJobApiClient.start(map);
-        jobsList = githubJobApiClient.getJobsList();
+        new Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG,"STARTING TO SET VARIABLES");
+                        setVariables();
+                    }
+                }, 2000
+        );
+
     }
 
     private Map<String,String> fetchJobsByTypeAndLocation(String type, String location){
@@ -96,4 +106,27 @@ public class MainActivity extends AppCompatActivity {
         jobCall.put("location",location);
         return jobCall;
     }
+
+
+    public void setVariables(){
+        jobsList = githubJobApiClient.getJobsList();
+        Log.d(TAG,"SIZE OF LIST:"+jobsList.size());
+
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            public void run() {
+                setRecView();
+            }
+        });
+    }
+
+    public void setRecView(){
+        jobsRecyclerView = findViewById(R.id.jobs_recyclerview);
+        JobAdapter jobAdapter = new JobAdapter(jobsList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        jobsRecyclerView.setAdapter(jobAdapter);
+        jobsRecyclerView.setLayoutManager(linearLayoutManager);
+    }
+
+
 }
