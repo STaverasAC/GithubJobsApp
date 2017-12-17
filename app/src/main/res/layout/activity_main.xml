@@ -5,48 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <FrameLayout
+        android:layout_gravity="center"
+        android:id="@+id/notes_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/type_edit_text"
-            android:hint="Enter skill ex. Java "
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <EditText
-            android:id="@+id/location_edit_text"
-            android:hint="Enter location ex New York"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <CheckBox
-            android:id="@+id/checkbox_preferences"
-            android:text="Remember my preferences"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <Button
-            android:text="Get Feed"
-            android:id="@+id/get_feed_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+    </FrameLayout>
 
-    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/news_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </FrameLayout>
 
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="0dp"
-       android:layout_weight="4">
+    <FrameLayout
+        android:id="@+id/jobs_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </FrameLayout>
 
-       <android.support.v7.widget.RecyclerView
-           android:id="@+id/jobs_recyclerview"
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"/>
 
-   </LinearLayout>
 
 
 
