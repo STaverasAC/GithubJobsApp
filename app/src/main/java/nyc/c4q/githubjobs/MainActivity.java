@@ -4,6 +4,9 @@ import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -14,11 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import nyc.c4q.githubjobs.controller.JobAdapter;
 import nyc.c4q.githubjobs.model.Job;
 import nyc.c4q.githubjobs.network.GithubJobApi;
 import nyc.c4q.githubjobs.network.GithubJobApiClient;
 
 public class MainActivity extends AppCompatActivity {
+    private String TAG =MainActivity.class.getSimpleName();
     List<Job> jobsList;
     final static String SHARED_PREF_KEY ="SharedPreferences";
     SharedPreferences storedTypeAndLocation;
@@ -26,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     EditText locationInput;
     CheckBox checkBox;
     Button getFeed;
+    RecyclerView jobsRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +43,15 @@ public class MainActivity extends AppCompatActivity {
 
         //TODO set up recycler view using jobsList;
 
-
-
-
         getFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 storePreferences();
+                JobAdapter jobAdapter = new JobAdapter(jobsList);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+                jobsRecyclerView.setAdapter(jobAdapter);
+                jobsRecyclerView.setLayoutManager(linearLayoutManager);
+
             }
         });
 
